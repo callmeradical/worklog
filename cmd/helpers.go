@@ -88,3 +88,14 @@ func TimeStampActivity(s string) string {
 	activity := strings.Join([]string{t, s}, ",")
 	return activity + "\n"
 }
+
+func ReadLog(p string, f string) (string, error) {
+	path := WorkLogPath(p, f)
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
+
+}

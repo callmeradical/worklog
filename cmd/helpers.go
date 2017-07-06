@@ -16,7 +16,7 @@ func WorkLogPath(p string, f string) string {
 	return filepath.Join(os.Getenv("HOME"), p, f)
 }
 func ArchiveLog(p string, f string) error {
-	archive := filepath.Join(os.Getenv("HOME"), p, "worklog_"+time.Now().Format(time.RFC3339)+".csv")
+	archive := filepath.Join(os.Getenv("HOME"), p, time.Now().Format(time.RFC3339)+"_worklog.csv")
 	filename := WorkLogPath(p, f)
 	return os.Rename(filename, archive)
 }

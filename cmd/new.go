@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/callmeradical/worklog/lib/data"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -34,13 +35,13 @@ var newCmd = &cobra.Command{
 		filename := viper.GetString("CurrentLog")
 		if filename == "" {
 			fmt.Println("No file found, generating new file...")
-			err := UpdateConfig("CurrentLog", "current_log.csv")
+			err := UpdateConfig("CurrentLog", "current_log.json")
 			if err != nil {
 				panic(err)
 			}
 		}
 
-		if LogExists(WorkLogPath(path, filename)) {
+		if data.LogExists(data.WorkLogPath(path, filename)) {
 			archiveLogPath := viper.GetString("ArchiveLogDir")
 			if archiveLogPath == "" {
 				archiveLogPath = path
@@ -50,17 +51,16 @@ var newCmd = &cobra.Command{
 				}
 			}
 
-			err := ArchiveLog(path, filename)
+			err := data.ArchiveLog(path, filename)
 			if err != nil {
 				panic(err)
 			}
 		}
 
-		err := CreateLog(WorkLogPath(path, filename))
+		err := data.CreateLogFile(data.WorkLogPath(path, filename))
 		if err != nil {
 			panic(err)
 		}
-
 	},
 }
 

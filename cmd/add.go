@@ -18,11 +18,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/callmeradical/worklog/lib/data"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var activity string
+var activityType string
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -41,10 +43,10 @@ var addCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		path := WorkLogPath(dir, filename)
+		path := data.WorkLogPath(dir, filename)
 
 		//Write message to log
-		err := WriteToWorkLog(path, activity)
+		err := data.WriteToWorkLog(path, activityType, activity)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
@@ -66,5 +68,6 @@ func init() {
 	// is called directly, e.g.:
 	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	addCmd.Flags().StringVarP(&activity, "activity", "a", "", "the activity to add to the work log")
+	addCmd.Flags().StringVarP(&activityType, "type", "t", "DONE", "type field for the activity")
 
 }

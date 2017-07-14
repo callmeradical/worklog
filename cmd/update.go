@@ -1,5 +1,4 @@
 // Copyright © 2017 NAME HERE <EMAIL ADDRESS>
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -18,16 +17,23 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/callmeradical/worklog/lib/data"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-// readCmd represents the read command
-var readCmd = &cobra.Command{
-	Use:   "read",
-	Short: "read the current worklog",
+var newType string
+var index int
+
+// updateCmd represents the update command
+var updateCmd = &cobra.Command{
+	Use:   "update",
+	Short: "Update the status of a previous entry",
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
+		if index < 1 {
+			fmt.Println("Must provide an index to update")
+			os.Exit(1)
+		}
 		filename := viper.GetString("CurrentLog")
 		dir := viper.GetString("LogDir")
 		if filename == "" || dir == "" {
@@ -35,28 +41,26 @@ var readCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		out, err := PresentLog(dir, filename)
+		err := data.UpdateActivity(dir, filename, newType, index)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
-
-		fmt.Println(out)
-
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(readCmd)
+	RootCmd.AddCommand(updateCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// readCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// updateCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// readCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
+	// updateCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	updateCmd.Flags().StringVarP(&newType, "type", "t", "DONE", "new type field for the activity")
+	updateCmd.Flags().IntVarP(&index, "item", "i", 0, "the activity to update")
 }
